@@ -37,15 +37,15 @@ def plot_classifier(W, data, Y):
     plt.clf()
     plt.close()
 
-def transform_X(data, space=None):
+def transform_X(data, add_dim=None):
     N = data.shape[0]
     # include bias
     b = np.ones((N, 1))
-    if not space:
+    if not add_dim:
         return np.concatenate((data, b), axis=1)
 
     # add 3rd dimension where data will be separable
-    elif space == '3d':
+    elif add_dim == '3d':
         return np.array(( data[:,0], data[:,1], data[:,0]**2+data[:,1]**2, np.ones(N) )).T
 
 def compute_error(data, Y, W, lamb):
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         path = 'data/{}-trainclass.csv'.format(i)
         Y = np.genfromtxt(path, delimiter=',').reshape(-1, 1)
 
-        data = transform_X(data_, space= '3d' if i == 'nonlinsep' else None)
+        data = transform_X(data_, add_dim='3d' if i == 'nonlinsep' else None)
         W, errors = sgd(data, Y, error_threshold=0.006 if i == 'nonlinsep' else 0.001, l_rate=1)
 
         plot_classifier(W, data, Y)
